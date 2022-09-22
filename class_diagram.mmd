@@ -1,4 +1,4 @@
-```mermaid
+%%{init: {'theme':'dark'}}%%
 classDiagram
 
     User <|-- Customer
@@ -29,11 +29,21 @@ classDiagram
         -specialty
     }
 
-    class Portfolio {
-    
+    class Credential {
+        -salt
+        -password_hash
     }
+    User "1" -- "1" Credential: authenticate
 
+    class Portfolio {
+        -link
+        -text
+        -profile_picture
+        -picture_uri
+    }
     Musician *-- Portfolio
+    Portfolio "1" -- "N" Event: history
+
 
     class Organizer {
         -company
@@ -47,7 +57,7 @@ classDiagram
         -description
     }
 
-    Location "1" -- "1" Musician: live_at
+    Musician "1" -- "1" Location: live_at
     Musician "1" -- "N" Event: work
     Event "N" -- "1" Location: at
     Organizer "1" -- "N" Event: host
@@ -80,10 +90,6 @@ classDiagram
     Message <|-- Text
     Message <|-- EventRequest
 
-    class ChatRoom {
-        -chatroom_id
-    }
-
     class Message {
         -message_no
         -send_at
@@ -104,6 +110,10 @@ classDiagram
         -description
     }
 
+    class ChatRoom {
+        -chatroom_id
+    }
     
-
-```
+    ChatRoom "1" -- "N" Message: contain
+    Event "1" -- "1" ChatRoom: chat
+    Musician "1" -- "1" ChatRoom: chat
