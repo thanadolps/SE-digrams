@@ -7,6 +7,7 @@ classDiagram
 
     class User {
         -user_id
+        +login()
     }
 
     class Admin {
@@ -15,6 +16,7 @@ classDiagram
     }
 
     class Customer {
+        -customer_id
         -first_name
         -last_name
         -phone_number
@@ -22,6 +24,9 @@ classDiagram
         -calendar_color
         -calendar_style
         -calendar_font_size
+        +change calendar preference()
+        +change account detail()
+        +send message(chatroom_id)
     }
 
     class Musician {
@@ -59,15 +64,23 @@ classDiagram
 
     class Organizer {
         -company
-        +makeEvent()
+        +search (preferences[0..*])
+        +create chatroom()
+        +confirm event completion(event_id)
+        +create review(event_id)
+        +create event request(preferences[0..*])
     }
 
     class Event {
         -event_id
+        -status
         -start_time
         -end_time
         -description
         -wage
+        +activate review()
+        +create payment()
+
     }
 
     %%Musician "1" -- "1" Location: live_at
@@ -76,6 +89,7 @@ classDiagram
     Organizer "1" -- "0..*" Event: host
     
     class Location {
+        -location_id
         -longitude
         -latitude
         -sub_district
@@ -85,14 +99,22 @@ classDiagram
     }
 
     class Review {
+        -review_id
         -rating
         -comment
-        -create_at
+        -created_at
     }
 
     class Payment {
         -payment_id
         -status
+        -transaction_id
+        -method
+        -timestamp
+        -currency_type
+        -amount
+        -description
+        +verify transaction()
     }
 
     Event "1" -- "1" Review: have
@@ -104,7 +126,7 @@ classDiagram
 
     class Message {
         -message_no
-        -send_at
+        -sent_at
         -sender
     }
 
