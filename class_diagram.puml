@@ -6,8 +6,13 @@
     hide circle
 
     'skinparam linetype ortho
-
     'skinparam linetype polyline
+
+    skinparam nodesep 100
+    'skinparam ranksep 100
+
+    'skinparam classBackgroundColor #d0b6eb
+    'skinparam ClassFontSize 10 
 
     User <|-- Customer
     User <|-- Admin
@@ -60,7 +65,7 @@
         -password_hash
         +verify(password)
     }
-    User "1" -- "1" Credential: authenticate
+    User "1..1" -- "1..1\t" Credential: authenticate
 
     class Portfolio {
         -link
@@ -69,7 +74,7 @@
         -picture_uri
     }
     Musician *-- Portfolio
-    Portfolio "1" -- "0..*" Event: history <
+    Portfolio "1..1" -- "0..*" Event: history <
 
 
     class Organizer {
@@ -93,10 +98,10 @@
 
     }
 
-    'Musician "1" -- "1" Location: live_at
-    Musician "1" -- "0..*" Event: work >
-    Event "0..*" -- "1" Location: at >
-    Organizer "1" -- "0..*" Event: host >
+    'Musician "1..1" -- "1..1" Location: live_at
+    Musician "1..1" -- "0..*" Event: work >
+    Event "0..*" -- "1..1" Location: at >
+    Organizer "1..1" -- "0..*" Event: host >
     
     class Location {
         -location_id
@@ -127,8 +132,8 @@
         +verify transaction()
     }
 
-    Event "1" -- "1" Review: have
-    Event "1" -- "1..*" Payment: have
+    Event "1..1" -- "1..1" Review: have >
+    Event "1..1" -- "1..*" Payment: have >
 
     Message <|-- Attachment
     Message <|-- Text
@@ -158,9 +163,9 @@
         -chatroom_id
     }
     
-    ChatRoom "1" -- "0..*" Message: contain
-    Event "1..*" -- "1" ChatRoom: chat
-    Musician "1" -- "1" ChatRoom: chat
-    Organizer "1" -- "1" ChatRoom: chat
+    ChatRoom "1..1" -- "0..*\t" Message: contain >
+    Event "1..*" - "1..1 " ChatRoom: chat >
+    Organizer "1..1\t" -- "1..*" ChatRoom: chat >
+    Musician "1..1" -- "1..*" ChatRoom: chat >
 
 @enduml
