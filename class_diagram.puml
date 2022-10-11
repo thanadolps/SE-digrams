@@ -14,26 +14,59 @@
     'skinparam classBackgroundColor #d0b6eb
     'skinparam ClassFontSize 10 
 
-    User <|-- Customer
-    User <|-- Admin
-    Customer <|-- Musician
-    Customer <|-- Organizer
+    UserEntity <|-- CustomerEntity
+    CustomerEntity <|-- MusicianEntity
+    CustomerEntity <|-- OrganizerEntity
+    MusicianEntity "1..1" *-- "1..1" PortfolioEntity: is Part of <
+    PortfolioEntity "1..1" -- "0..*\t" EventEntity: history <
+
+    'Musician "1..1" -- "1..1" Location: live_at
+    MusicianEntity "1..1" -- "0..*" EventEntity: work >
+    EventEntity "0..*" -- "1..1" LocationEntity: at >
+    OrganizerEntity "1..1" -- "0..*" EventEntity: host >
+
+    EventEntity "1..1\t" o-- "1..1" ReviewEntity: is Part Of <
+    EventEntity "1..1" o-- "1..*\t" PaymentEntity: is Part Of <
+
+    MessageEntity  <|-- AttachmentEntity
+    MessageEntity  <|-- TextEntity
+    MessageEntity  <|-- EventRequestEntity
+
+    ChatRoomEntity "1..1" *-- "0..*\t" MessageEntity: is Part of <
+    EventEntity "1..*" - "1..1 " ChatRoomEntity: chat >
+    OrganizerEntity "1..1\t" -- "1..*" ChatRoomEntity: chat >
+    MusicianEntity "1..1" -- "1..*" ChatRoomEntity: chat >
+
+    UserHandler -- UserController
+    UserController -- UserEntity
+    EventHandler -- EventController
+    EventController -- EventEntity
+    PaymentHandler -- PaymentController
+    PaymentController -- PaymentEntity
+    
 
 
-    class User {
+    class UserHandler <<Boundary>> {
+        +login()
+        +verify(password)
+        +update password(new_password)
+    }
+
+    class UserController <<Control>> {
+        +change password(new_password)
+    }
+
+    class UserEntity <<Entity>> {
         -user_id
         -salt
         -password_hash
-        +verify(password)
-        +login()
     }
 
-    class Admin {
+    class Admin <<Entity>> {
         -staff_id
-        
     }
 
-    class Customer {
+    class CustomerEntity <<Entity>> {
         -customer_id
         -first_name
         -last_name
@@ -42,12 +75,20 @@
         -calendar_color
         -calendar_style
         -calendar_font_size
+    }
+
+    class CustomerController <<Control>> {
         +change calendar preference()
         +change account detail()
         +send message(chatroom_id)
     }
 
-    class Musician {
+    class CustomerHandler <<Boundary>> {
+        +update calendar preference()
+        +update account detail()
+    }
+
+    class MusicianEntity <<Entity>> {
         -status
         -specialty[0..*]
         -profile_picture
@@ -60,50 +101,59 @@
         -province
         -zip_code
         -picture_uri[0..*]
+    }
+
+    class MusicianController <<Control>> {
         +edit portfolio()
         +accept event request()
         +decline event request()
-    }
+    }  
+
     'User "1..1" -- "1..1\t" Credential: authenticate <
 
-    class Portfolio {
+    class PortfolioEntity <<Entity>> {
         -link
         -text
         -profile_picture
         -picture_uri
     }
-    Musician "1..1" *-- "1..1" Portfolio: is Part of <
-    Portfolio "1..1" -- "0..*\t" Event: history <
+
+    class PortfolioHandler <<Boundary>> {
+        +update portfolio()
+    }
 
 
-    class Organizer {
+    class OrganizerEntity <<Entity>> {
         -company
+    }
+
+    class OrganizerController <<Control>> {
         +search musician (event_details[0..*])
-        +create chatroom()
-        +create event request(event_details[0..*])
+        +initiate chatroom(musicianId)
+        +initiate event request(event_details[0..*])
         +confirm event completion(event_id)
         +create review(event_id)
     }
 
-    class Event {
+    class EventEntity <<Entity>> {
         -event_id
         -status
         -start_time
         -end_time
         -description
         -wage
+    }
+
+    class EventController <<Control>> {
+        +add to portfolio()
+    }       
+
+    class EventHandler <<Boundary>> {
         +update calendar()
         +create review()
         +create payment()
-        +add to portfolio()
     }
-
-    'Musician "1..1" -- "1..1" Location: live_at
-    Musician "1..1" -- "0..*" Event: work >
-    Event "0..*" -- "1..1" Location: at >
-    Organizer "1..1" -- "0..*" Event: host >
-    
-    class Location {
+    class LocationEntity <<Entity>> {
         -location_id
         -longitude
         -latitude
@@ -113,14 +163,18 @@
         -zip_code
     }
 
-    class Review {
+    class ReviewEntity <<Entity>> {
         -review_id
         -rating
         -comment
         -created_at
     }
 
-    class Payment {
+    class ReviewHandler <<Boundary>> {
+        +update review(reviewId)
+    }
+
+    class Payment <<Entity>>{
         -payment_id
         -status
         -transaction_id
@@ -132,40 +186,36 @@
         +verify transaction()
     } 
 
-    Event "1..1\t" o-- "1..1" Review: is Part Of <
-    Event "1..1" o-- "1..*\t" Payment: is Part Of <
-
-    Message <|-- Attachment
-    Message <|-- Text
-    Message <|-- EventRequest
-
-    class Message {
+    class MessageEntity <<Entity>> {
         -message_no
         -sent_at
         -sender
     }
 
-    class Attachment {
+    class AttachmentEntity <<Entity>> {
         -uri
     }
 
-    class Text {
+    class TextEntity <<Entity>> {
         -text
     }
 
-    class EventRequest {
+    class EventRequestEntity <<Entity>> {
         -start_time
         -end_time
         -description
     }
 
-    class ChatRoom {
+    class EventRequestHandler <<Boundary>> {
+        +update event request()
+    }
+
+    class ChatRoomEntity <<Entity>> {
         -chatroom_id
     } 
     
-    ChatRoom "1..1" *-- "0..*\t" Message: is Part of <
-    Event "1..*" - "1..1 " ChatRoom: chat >
-    Organizer "1..1\t" -- "1..*" ChatRoom: chat >
-    Musician "1..1" -- "1..*" ChatRoom: chat >
+    class ChatRoomHandler <<Boundary>> {
+        +create chatroom(organizerId, musicianId)
+    }
 
 @enduml
