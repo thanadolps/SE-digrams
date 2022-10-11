@@ -105,9 +105,13 @@
 
     class MusicianController <<Control>> {
         +edit portfolio()
+    }  
+
+    class MusicianHandler <<Boundary>> {
+        +update portfolio()
         +accept event request()
         +decline event request()
-    }  
+    }
 
     'User "1..1" -- "1..1\t" Credential: authenticate <
 
@@ -142,17 +146,24 @@
         -end_time
         -description
         -wage
-    }
-
-    class EventController <<Control>> {
-        +add to portfolio()
-    }       
+    }    
 
     class EventHandler <<Boundary>> {
         +update calendar()
         +create review()
         +create payment()
+        +add to portfolio()
     }
+
+    class SearchController <<Control>> {
+        +calculate matching musicians(event_details[0..*])
+    }
+
+    class SearchHandler <<Boundary>> {
+        +fill in event details()
+        +search matching musicians(event_details[0..*])
+    }
+
     class LocationEntity <<Entity>> {
         -location_id
         -longitude
@@ -163,6 +174,16 @@
         -zip_code
     }
 
+    class LocationController <<Control>> {
+        +create location()
+        +calculate distance()
+    }
+
+    class LocationHandler <<Boundary>> {
+        +add location()
+        +update location()
+    }
+
     class ReviewEntity <<Entity>> {
         -review_id
         -rating
@@ -170,11 +191,18 @@
         -created_at
     }
 
+    class ReviewController <<Control>> {
+        +create review()
+        +set available()
+        +set unavailable()
+    }
+
     class ReviewHandler <<Boundary>> {
+        +add review()
         +update review(reviewId)
     }
 
-    class Payment <<Entity>>{
+    class PaymentEntity <<Entity>>{
         -payment_id
         -status
         -transaction_id
@@ -183,8 +211,18 @@
         -currency_type
         -amount
         -description
-        +verify transaction()
+        
     } 
+
+    class PaymentController <<Control>> {
+        +notify payment()
+        +check payment()
+    }
+
+    class PaymentHandler <<Boundary>> {
+        +verify transaction()
+        +update payment()
+    }
 
     class MessageEntity <<Entity>> {
         -message_no
@@ -216,6 +254,7 @@
     
     class ChatRoomHandler <<Boundary>> {
         +create chatroom(organizerId, musicianId)
+        +create message(text,senderId)
     }
 
 @enduml
