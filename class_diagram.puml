@@ -62,8 +62,16 @@
         -password_hash
     }
 
-    class Admin <<Entity>> {
+    class AdminEntity <<Entity>> {
         -staff_id
+    }
+
+    class AdminController <<Control>> {
+        +manage review()
+    }
+
+    class AdminHandler <<Boundary>> {
+        +update review()
     }
 
     class CustomerEntity <<Entity>> {
@@ -86,6 +94,14 @@
     class CustomerHandler <<Boundary>> {
         +update calendar preference()
         +update account detail()
+    }
+
+    class CalendarController <<Control>> {
+        +manage related events()
+    }
+
+    class CalendarHandler <<Boundary>> {
+        +fetch related events(customer_id)
     }
 
     class MusicianEntity <<Entity>> {
@@ -122,7 +138,6 @@
         +update portfolio()
     }
 
-
     class OrganizerEntity <<Entity>> {
         -company
     }
@@ -153,6 +168,7 @@
         +create review()
         +create payment()
     }
+
     class LocationEntity <<Entity>> {
         -location_id
         -longitude
