@@ -12,11 +12,18 @@
     'skinparam ranksep 100
 
     'skinparam classBackgroundColor #d0b6eb
-    'skinparam ClassFontSize 10 
+    'skinparam ClassFontSize 10
 
+    'GENERALIZATION
     UserEntity <|-- CustomerEntity
+    UserEntity <|-- AdminEntity
     CustomerEntity <|-- MusicianEntity
     CustomerEntity <|-- OrganizerEntity
+    MessageEntity  <|-- AttachmentEntity
+    MessageEntity  <|-- TextEntity
+    MessageEntity  <|-- EventRequestEntity
+
+    'ENTITY ENTITY 
     MusicianEntity "1..1" *-- "1..1" PortfolioEntity: is Part of <
     PortfolioEntity "1..1" -- "0..*\t" EventEntity: history <
 
@@ -28,24 +35,50 @@
     EventEntity "1..1\t" o-- "1..1" ReviewEntity: is Part Of <
     EventEntity "1..1" o-- "1..*\t" PaymentEntity: is Part Of <
 
-    MessageEntity  <|-- AttachmentEntity
-    MessageEntity  <|-- TextEntity
-    MessageEntity  <|-- EventRequestEntity
+
 
     ChatRoomEntity "1..1" *-- "0..*\t" MessageEntity: is Part of <
     EventEntity "1..*" - "1..1 " ChatRoomEntity: chat >
     OrganizerEntity "1..1\t" -- "1..*" ChatRoomEntity: chat >
     MusicianEntity "1..1" -- "1..*" ChatRoomEntity: chat >
 
-    UserHandler -- UserController
-    UserController -- UserEntity
-    EventHandler -- EventController
-    EventController -- EventEntity
-    PaymentHandler -- PaymentController
-    PaymentController -- PaymentEntity
-    
+    'BOUNDARY - CONTROL
+    UserHandler "1..1"--"1..1" UserController: handle >
+    AdminHandler "1..1"--"1..1" AdminController: handle >
+    CustomerHandler "1..1" --"1..1" CustomerController: handle >
+    MusicianHandler "1..1"--"1..1" MusicianController: handle >
+    OrganizerHandler "1..1" --"1..1" OrganizerController: handle >
+    MusicianHandler "1..1" --"1..1" MusicianController: handle >
+    EventHandler "1..1"--"1..1" EventController: handle >
+    PaymentHandler "1..1"--"1..1" PaymentController: handle >
+    ReviewHandler "1..1"--"1..1" ReviewController: handle >
+    EventRequestHandler "1..1"--"1..1" EventRequestController: handle >
+    SearchHandler "1..1"--"1..1" SearchController: handle >
+    LocationHandler "1..1"--"1..1" LocationController: handle >
+    ChatRoomHandler "1..1"--"1..1" ChatRoomController: handle >
+    CalendarHandler "1..1"--"1..1" CalendarController: handle >
+    PortfolioHandler "1..1"--"1..1" PortfolioController: handle >
 
+    'CONTROLL-ENTITY
+    UserController "1..1"--"0..*" UserEntity: control >
+    AdminController "1..1"--"0..*" AdminEntity: control >
+    CustomerController "1..1"--"0..*" CustomerEntity: control >
+    MusicianController "1..1"--"0..*" MusicianEntity: control >
+    OrganizerController "1..1"--"0..*" OrganizerEntity: control >
+    MusicianController "1..1"--"0..*" MusicianEntity: control >
+    EventController "1..1"--"0..*" EventEntity: control >
+    PaymentController "1..1"--"0..*" PaymentEntity: control >
+    ReviewController "1..1"--"0..*" ReviewEntity: control >
+    EventRequestController "1..1"--"0..*" EventRequestEntity: control >
+    SearchController "1..1"--"0..*" SearchEntity: control >
+    LocationController "1..1"--"0..*" LocationEntity: control >
+    ChatRoomController "1..1"--"0..*" ChatRoomEntity: control >
+    CalendarController "1..1"--"0..*" CalendarEntity: control >
+    PortfolioController "1..1"--"0..*" PortfolioEntity: control >
 
+    'CONTROL-CONTROL
+    CalendarController "1..1"--"1..1" CustomerController: call <
+    SearchController "1..1"--"1..1" OrganizerController: call <
     class UserHandler <<Boundary>> {
         +login()
         +verify(password)
@@ -138,6 +171,10 @@
         -picture_uri
     }
 
+    class PortfolioController <<Controller>> {
+        +manage portfolio()
+    }
+
     class PortfolioHandler <<Boundary>> {
         +update portfolio()
     }
@@ -154,6 +191,9 @@
         +create review(event_id)
     }
 
+    class OrganizerHandler <<Boundary>> {
+    }
+
     class EventEntity <<Entity>> {
         -event_id
         -status
@@ -162,6 +202,10 @@
         -description
         -wage
     }    
+
+    class EventController <<Control>> {
+    
+    }
 
     class EventHandler <<Boundary>> {
         +update calendar()
@@ -267,6 +311,10 @@
         -chatroom_id
     } 
     
+    class ChatRoomController <<Control>> {
+
+    }
+
     class ChatRoomHandler <<Boundary>> {
         +create chatroom(organizerId, musicianId)
         +create message(text,senderId)
