@@ -23,9 +23,12 @@
     MessageEntity  <|-- TextEntity
     MessageEntity  <|-- EventRequestEntity
 
-    'ENTITY ENTITY 
-    MusicianEntity "1..1" *-- "1..1" PortfolioEntity: is Part of <
-    PortfolioEntity "1..1" -- "0..*\t" EventEntity: history <
+    'Set class background color based on type of class
+    skinparam class {
+        BackgroundColor<<Boundary>> #C4DFAA
+        BackgroundColor<<Control>> #C4D7E0
+        BackgroundColor<<Entity>> #F2D7D9
+    }
 
     'Musician "1..1" -- "1..1" Location: live_at
     MusicianEntity "1..1" -- "0..*" EventEntity: work >
