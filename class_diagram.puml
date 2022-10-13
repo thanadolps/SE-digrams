@@ -5,23 +5,15 @@
     ' hide class icon
     hide circle
 
-    'skinparam linetype ortho
+    skinparam linetype ortho
     'skinparam linetype polyline
 
     skinparam nodesep 100
-    'skinparam ranksep 100
+    skinparam ranksep 100
 
     'skinparam classBackgroundColor #d0b6eb
     'skinparam ClassFontSize 10
 
-    'GENERALIZATION
-    UserEntity <|-- CustomerEntity
-    UserEntity <|-- AdminEntity
-    CustomerEntity <|-- MusicianEntity
-    CustomerEntity <|-- OrganizerEntity
-    MessageEntity  <|-- AttachmentEntity
-    MessageEntity  <|-- TextEntity
-    MessageEntity  <|-- EventRequestEntity
 
     'Set class background color based on type of class
     skinparam class {
@@ -30,190 +22,170 @@
         BackgroundColor<<Entity>> #F2D7D9
     }
 
-    'Musician "1..1" -- "1..1" Location: live_at
-    MusicianEntity "1..1" -- "0..*" EventEntity: work >
-    EventEntity "0..*" -- "1..1" LocationEntity: at >
-    OrganizerEntity "1..1" -- "0..*" EventEntity: host >
 
-    EventEntity "1..1\t" o-- "1..1" ReviewEntity: is Part Of <
-    EventEntity "1..1" o-- "1..*\t" PaymentEntity: is Part Of <
+    package Account {
+        class UserHandler <<Boundary>> {
+            +login()
+            +verify(password)
+            +update password(new_password)
+        }
 
+        class UserController <<Control>> {
+            +change password(new_password)
+        }
 
+        class UserEntity <<Entity>> {
+            -user_id
+            -salt
+            -password_hash
+        }
 
-    ChatRoomEntity "1..1" *-- "0..*\t" MessageEntity: is Part of <
-    EventEntity "1..*" -- "1..1 " ChatRoomEntity: chat >
-    OrganizerEntity "1..1\t" -- "1..*" ChatRoomEntity: chat >
-    MusicianEntity "1..1" -- "1..*" ChatRoomEntity: chat >
+        class AdminEntity <<Entity>> {
+            -staff_id
+        }
 
-    'BOUNDARY - CONTROL
-    UserHandler "1..1" -- "1..1" UserController: handle >
-    AdminHandler "1..1" -- "1..1" AdminController: handle >
-    CustomerHandler "1..1" -- "1..1" CustomerController: handle >
-    MusicianHandler "1..1" -- "1..1" MusicianController: handle >
-    OrganizerHandler "1..1" -- "1..1" OrganizerController: handle >
-    EventHandler "1..1" -- "1..1" EventController: handle >
-    PaymentHandler "1..1" -- "1..1" PaymentController: handle >
-    ReviewHandler "1..1" -- "1..1" ReviewController: handle >
-    EventRequestHandler "1..1" -- "1..1" EventRequestController: handle >
-    SearchHandler "1..1" -- "1..1" SearchController: handle >
-    LocationHandler "1..1" -- "1..1" LocationController: handle >
-    ChatRoomHandler "1..1" -- "1..1" ChatRoomController: handle >
-    CalendarHandler "1..1" -- "1..1" CalendarController: handle >
-    PortfolioHandler "1..1" -- "1..1" PortfolioController: handle >
+        class AdminController <<Control>> {
+            +manage review()
+        }
 
-    'CONTROLL-ENTITY
-    UserController "1..1" -- "0..*" UserEntity: control >
-    AdminController "1..1" -- "0..*" AdminEntity: control >
-    CustomerController "1..1" -- "0..*" CustomerEntity: control >
-    OrganizerController "1..1" -- "0..*" OrganizerEntity: control >
-    MusicianController "1..1" -- "0..*" MusicianEntity: control >
-    EventController "1..1" -- "0..*" EventEntity: control >
-    PaymentController "1..1" -- "0..*" PaymentEntity: control >
-    ReviewController "1..1" -- "0..*" ReviewEntity: control >
-    EventRequestController "1..1" -- "0..*" EventRequestEntity: control >
-    SearchController "1..1" -- "0..*" SearchEntity: control >
-    LocationController "1..1" -- "0..*" LocationEntity: control >
-    ChatRoomController "1..1" -- "0..*" ChatRoomEntity: control >
-    CalendarController "1..1" -- "0..*" CalendarEntity: control >
-    PortfolioController "1..1" -- "0..*" PortfolioEntity: control >
+        class AdminHandler <<Boundary>> {
+            +update review()
+        }
 
-    'CONTROL-CONTROL
-    CalendarController "1..1" -- "1..1" CustomerController: call <
-    SearchController "1..1" -- "1..1" OrganizerController: call <
+        class CustomerEntity <<Entity>> {
+            -customer_id
+            -first_name
+            -last_name
+            -phone_number
+            -email
+            -calendar_color
+            -calendar_style
+            -calendar_font_size
+        }
+
+        class CustomerController <<Control>> {
+            +change calendar preference()
+            +change account detail()
+            +send message(chatroom_id)
+        }
+
+        class CustomerHandler <<Boundary>> {
+            +update calendar preference()
+            +update account detail()
+        }
+
+        class CalendarEntity {
+
+        }
     
-    class UserHandler <<Boundary>> {
-        +login()
-        +verify(password)
-        +update password(new_password)
+        class CalendarController <<Control>> {
+            +manage related events()
+        }
+
+        class CalendarHandler <<Boundary>> {
+            +fetch related events(customer_id)
+        }
     }
 
-    class UserController <<Control>> {
-        +change password(new_password)
+    package Musician {
+        class MusicianEntity <<Entity>> {
+            -status
+            -specialty[0..*]
+            -profile_picture
+            -introduction
+            -link
+            -latitute
+            -longitude
+            -sub_district
+            -district
+            -province
+            -zip_code
+            -picture_uri[0..*]
+        }
+
+        class MusicianController <<Control>> {
+            +edit portfolio()
+        }  
+
+        class MusicianHandler <<Boundary>> {
+            +update portfolio()
+            +accept event request()
+            +decline event request()
+        }
+
+        'User "1..1" -- "1..1\t" Credential: authenticate <
+
+        class PortfolioEntity <<Entity>> {
+            -link
+            -text
+            -profile_picture
+            -picture_uri
+        }
+
+        class PortfolioController <<Controller>> {
+            +manage portfolio()
+        }
+
+        class PortfolioHandler <<Boundary>> {
+            +update portfolio()
+        }
     }
 
-    class UserEntity <<Entity>> {
-        -user_id
-        -salt
-        -password_hash
+    package Organizer {
+        class OrganizerEntity <<Entity>> {
+            -company
+        }
+
+        class OrganizerController <<Control>> {
+            +search musician (event_details[0..*])
+            +initiate chatroom(musicianId)
+            +initiate event request(event_details[0..*])
+            +confirm event completion(event_id)
+            +create review(event_id)
+        }
+
+        class OrganizerHandler <<Boundary>> {
+        }
     }
 
-    class AdminEntity <<Entity>> {
-        -staff_id
-    }
+    package Event {
+        class EventEntity <<Entity>> {
+            -event_id
+            -status
+            -start_time
+            -end_time
+            -description
+            -wage
+        }    
 
-    class AdminController <<Control>> {
-        +manage review()
-    }
+        class EventController <<Control>> {
 
-    class AdminHandler <<Boundary>> {
-        +update review()
-    }
+        }
 
-    class CustomerEntity <<Entity>> {
-        -customer_id
-        -first_name
-        -last_name
-        -phone_number
-        -email
-        -calendar_color
-        -calendar_style
-        -calendar_font_size
-    }
+        class EventHandler <<Boundary>> {
+            +update calendar()
+            +create review()
+            +create payment()
+            +add to portfolio()
+        }
 
-    class CustomerController <<Control>> {
-        +change calendar preference()
-        +change account detail()
-        +send message(chatroom_id)
-    }
+        class ReviewEntity <<Entity>> {
+            -review_id
+            -rating
+            -comment
+            -created_at
+        }
 
-    class CustomerHandler <<Boundary>> {
-        +update calendar preference()
-        +update account detail()
-    }
+        class ReviewController <<Control>> {
+            +create review()
+            +set available()
+            +set unavailable()
+        }
 
-    class CalendarController <<Control>> {
-        +manage related events()
-    }
-
-    class CalendarHandler <<Boundary>> {
-        +fetch related events(customer_id)
-    }
-
-    class MusicianEntity <<Entity>> {
-        -status
-        -specialty[0..*]
-        -profile_picture
-        -introduction
-        -link
-        -latitute
-        -longitude
-        -sub_district
-        -district
-        -province
-        -zip_code
-        -picture_uri[0..*]
-    }
-
-    class MusicianController <<Control>> {
-        +edit portfolio()
-    }  
-
-    class MusicianHandler <<Boundary>> {
-        +update portfolio()
-        +accept event request()
-        +decline event request()
-    }
-
-    'User "1..1" -- "1..1\t" Credential: authenticate <
-
-    class PortfolioEntity <<Entity>> {
-        -link
-        -text
-        -profile_picture
-        -picture_uri
-    }
-
-    class PortfolioController <<Controller>> {
-        +manage portfolio()
-    }
-
-    class PortfolioHandler <<Boundary>> {
-        +update portfolio()
-    }
-
-    class OrganizerEntity <<Entity>> {
-        -company
-    }
-
-    class OrganizerController <<Control>> {
-        +search musician (event_details[0..*])
-        +initiate chatroom(musicianId)
-        +initiate event request(event_details[0..*])
-        +confirm event completion(event_id)
-        +create review(event_id)
-    }
-
-    class OrganizerHandler <<Boundary>> {
-    }
-
-    class EventEntity <<Entity>> {
-        -event_id
-        -status
-        -start_time
-        -end_time
-        -description
-        -wage
-    }    
-
-    class EventController <<Control>> {
-    
-    }
-
-    class EventHandler <<Boundary>> {
-        +update calendar()
-        +create review()
-        +create payment()
-        +add to portfolio()
+        class ReviewHandler <<Boundary>> {
+            +add review()
+            +update review(reviewId)
+        }
     }
 
     class SearchController <<Control>> {
@@ -245,81 +217,140 @@
         +update location()
     }
 
-    class ReviewEntity <<Entity>> {
-        -review_id
-        -rating
-        -comment
-        -created_at
+    package Payment {
+        class PaymentEntity <<Entity>>{
+            -payment_id
+            -status
+            -transaction_id
+            -method
+            -timestamp
+            -currency_type
+            -amount
+            -description
+            
+        } 
+
+        class PaymentController <<Control>> {
+            +notify payment()
+            +check payment()
+        }
+
+        class PaymentHandler <<Boundary>> {
+            +verify transaction()
+            +update payment()
+        }
     }
 
-    class ReviewController <<Control>> {
-        +create review()
-        +set available()
-        +set unavailable()
-    }
+    package Message {
+        class MessageEntity <<Entity>> {
+            -message_no
+            -sent_at
+            -sender
+        }
 
-    class ReviewHandler <<Boundary>> {
-        +add review()
-        +update review(reviewId)
-    }
+        class AttachmentEntity <<Entity>> {
+            -uri
+        }
 
-    class PaymentEntity <<Entity>>{
-        -payment_id
-        -status
-        -transaction_id
-        -method
-        -timestamp
-        -currency_type
-        -amount
-        -description
-        
-    } 
+        class TextEntity <<Entity>> {
+            -text
+        }
 
-    class PaymentController <<Control>> {
-        +notify payment()
-        +check payment()
-    }
+        class EventRequestEntity <<Entity>> {
+            -start_time
+            -end_time
+            -description
+        }
 
-    class PaymentHandler <<Boundary>> {
-        +verify transaction()
-        +update payment()
-    }
+        class EventRequestController <<Control>> {
 
-    class MessageEntity <<Entity>> {
-        -message_no
-        -sent_at
-        -sender
-    }
+        }
 
-    class AttachmentEntity <<Entity>> {
-        -uri
-    }
-
-    class TextEntity <<Entity>> {
-        -text
-    }
-
-    class EventRequestEntity <<Entity>> {
-        -start_time
-        -end_time
-        -description
-    }
-
-    class EventRequestHandler <<Boundary>> {
-        +update event request()
-    }
-
-    class ChatRoomEntity <<Entity>> {
-        -chatroom_id
-    } 
+        class EventRequestHandler <<Boundary>> {
+            +update event request()
+        }
     
-    class ChatRoomController <<Control>> {
+        class ChatRoomEntity <<Entity>> {
+            -chatroom_id
+        } 
+        
+        class ChatRoomController <<Controller>> {
 
+        }
+
+        class ChatRoomHandler <<Boundary>> {
+            +create chatroom(organizerId, musicianId)
+            +create message(text,senderId)
+        }
     }
 
-    class ChatRoomHandler <<Boundary>> {
-        +create chatroom(organizerId, musicianId)
-        +create message(text,senderId)
-    }
+
+
+    'GENERALIZATION
+    UserEntity <|-- CustomerEntity
+    UserEntity <|-- AdminEntity
+    CustomerEntity <|-- MusicianEntity
+    CustomerEntity <|-- OrganizerEntity
+    MessageEntity  <|-- AttachmentEntity
+    MessageEntity  <|-- EventRequestEntity
+    MessageEntity  <|-- TextEntity
+    
+
+    'ENTITY ENTITY 
+    MusicianEntity "1..1" *-- "1..1" PortfolioEntity : is Part of <
+    
+    'Musician "1..1" -- "1..1" Location: live_at
+    MusicianEntity "1..1" --- "0..*" EventEntity: work >
+    PortfolioEntity "1..1" -- "0..*" EventEntity: history <
+
+    EventEntity "0..*" -- "1..1" LocationEntity: at >
+    OrganizerEntity "1..1" -- "0..*" EventEntity: host >
+
+    EventEntity "1..1" o-- "1..1" ReviewEntity: is Part Of <
+    EventEntity "1..1" o-- "1..*" PaymentEntity: is Part Of <
+
+
+    ChatRoomEntity "1..1" *-- "0..*" MessageEntity: is Part of <
+    EventEntity "1..*" -- "1..1 " ChatRoomEntity: chat >
+    OrganizerEntity "1..1" --- "1..*" ChatRoomEntity: chat >
+    MusicianEntity "1..1" -- "1..*" ChatRoomEntity: chat >
+
+    'BOUNDARY - CONTROL
+    UserHandler "1..1" -- "1..1" UserController: handle >
+    AdminHandler "1..1" -- "1..1" AdminController: handle >
+    CustomerHandler "1..1" -- "1..1" CustomerController: handle >
+    MusicianHandler "1..1" -- "1..1" MusicianController: handle >
+    OrganizerHandler "1..1" -- "1..1" OrganizerController: handle >
+    EventHandler "1..1" -- "1..1" EventController: handle >
+    PaymentHandler "1..1" -- "1..1" PaymentController: handle >
+    ReviewHandler "1..1" -- "1..1" ReviewController: handle >
+    EventRequestHandler "1..1" -- "1..1" EventRequestController: handle >
+    SearchHandler "1..1" -- "1..1" SearchController: handle >
+    LocationHandler "1..1" -- "1..1" LocationController: handle >
+    ChatRoomHandler "1..1" -- "1..1" ChatRoomController: handle >
+    CalendarHandler "1..1" -- "1..1" CalendarController: handle >
+    PortfolioHandler "1..1" -- "1..1" PortfolioController: handle >
+
+    'CONTROLL-ENTITY
+    UserController "1..1" -- "0..*" UserEntity: control >
+    AdminController "1..1" -- "0..*" AdminEntity: control >
+    CustomerController "1..1" -- "0..*" CustomerEntity: control >
+    OrganizerController "1..1" -- "0..*" OrganizerEntity: control >
+    MusicianController "1..1" -- "0..*" MusicianEntity: control >
+    EventController "1..1" -- "0..*" EventEntity: control >
+    PaymentController "1..1" -- "0..*" PaymentEntity: control >
+    ReviewController "1..1" -- "0..*" ReviewEntity: control >
+    EventRequestController "1..1" -- "0..*" EventRequestEntity: control >
+    SearchController "1..1" -- "0..*" SearchEntity: control >
+    LocationEntity "0..*" -- "1..1" LocationController: control <
+    ChatRoomController "1..1" -- "0..*" ChatRoomEntity: control >
+    CalendarEntity "0..*" -- "1..1" CalendarController: control <
+    PortfolioController "1..1" -- "0..*" PortfolioEntity: control >
+
+    'CONTROL-CONTROL
+    CustomerController "1..1" -- "1..1" CalendarController: call <
+    SearchController "1..1" -- "1..1" OrganizerController: call <
+    
+
 
 @enduml
