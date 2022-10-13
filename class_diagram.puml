@@ -48,7 +48,6 @@
     CustomerHandler "1..1" --"1..1" CustomerController: handle >
     MusicianHandler "1..1"--"1..1" MusicianController: handle >
     OrganizerHandler "1..1" --"1..1" OrganizerController: handle >
-    MusicianHandler "1..1" --"1..1" MusicianController: handle >
     EventHandler "1..1"--"1..1" EventController: handle >
     PaymentHandler "1..1"--"1..1" PaymentController: handle >
     ReviewHandler "1..1"--"1..1" ReviewController: handle >
@@ -63,7 +62,6 @@
     UserController "1..1"--"0..*" UserEntity: control >
     AdminController "1..1"--"0..*" AdminEntity: control >
     CustomerController "1..1"--"0..*" CustomerEntity: control >
-    MusicianController "1..1"--"0..*" MusicianEntity: control >
     OrganizerController "1..1"--"0..*" OrganizerEntity: control >
     MusicianController "1..1"--"0..*" MusicianEntity: control >
     EventController "1..1"--"0..*" EventEntity: control >
