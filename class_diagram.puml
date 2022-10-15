@@ -102,6 +102,7 @@
 
         class MusicianController <<Control>> {
             +edit portfolio()
+            +show musician portfolio(id)
         }  
 
         class MusicianHandler <<Boundary>> {
@@ -119,7 +120,7 @@
             -picture_uri
         }
 
-        class PortfolioController <<Controller>> {
+        class PortfolioController <<Control>> {
             +manage portfolio()
         }
 
@@ -156,7 +157,7 @@
         }    
 
         class EventController <<Control>> {
-
+            +create event()
         }
 
         class EventHandler <<Boundary>> {
@@ -191,7 +192,8 @@
 
     class SearchHandler <<Boundary>> {
         +fill in event details()
-        +search matching musicians(event_details[0..*])
+        +search musicians(event_details[0..*])
+        +view profile(id)
     }
 
     class LocationEntity <<Entity>> {
@@ -207,12 +209,14 @@
     class LocationController <<Control>> {
         +create location()
         +calculate distance()
+        +find all near(location)
     }
 
     class LocationHandler <<Boundary>> {
         +add location()
         +update location()
     }
+    
 
     package Payment {
         class PaymentEntity <<Entity>>{
@@ -263,24 +267,24 @@
         }
 
         class EventRequestController <<Control>> {
-
+            +update event reqest()
         }
 
         class EventRequestHandler <<Boundary>> {
-            +update event request()
+            +change event request()
         }
     
         class ChatRoomEntity <<Entity>> {
             -chatroom_id
         } 
         
-        class ChatRoomController <<Controller>> {
-
+        class ChatRoomController <<Control>> {
+            +send message(text,senderId)
         }
 
         class ChatRoomHandler <<Boundary>> {
             +create chatroom(organizerId, musicianId)
-            +create message(text,senderId)
+            +create event request()
         }
     }
 
@@ -332,6 +336,10 @@
     CalendarHandler "1..1" -- "1..1" CalendarController: handle >
     PortfolioHandler "1..1" -- "1..1" PortfolioController: handle >
 
+    SearchHandler "1..1" -- "1..1" MusicianController: handle >
+    ChatRoomHandler "1..1" -- "1..1" OrganizerController: handle >
+    MusicianHandler "1..1" -- "1..1" EventController: handle >
+
     'CONTROLL-ENTITY
     UserController "1..1" -- "0..*" UserEntity: control >
     AdminController "1..1" -- "0..*" AdminEntity: control >
@@ -342,7 +350,7 @@
     PaymentController "1..1" -- "0..*" PaymentEntity: control >
     ReviewController "1..1" -- "0..*" ReviewEntity: control >
     EventRequestController "1..1" -- "0..*" EventRequestEntity: control >
-    SearchController "1..1" -- "0..*" SearchEntity: control >
+    'SearchController "1..1" -- "0..*" SearchEntity: control >
     LocationEntity "0..*" -- "1..1" LocationController: control <
     ChatRoomController "1..1" -- "0..*" ChatRoomEntity: control >
     CalendarEntity "0..*" -- "1..1" CalendarController: control <
