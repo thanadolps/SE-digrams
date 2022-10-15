@@ -22,6 +22,9 @@
         BackgroundColor<<Entity>> #F2D7D9
     }
 
+    skinparam PackageBorderColor #ABABAD
+    skinparam PackageBackgroundColor #EBECF0
+    
 
     package Account {
         class UserHandler <<Boundary>> {
