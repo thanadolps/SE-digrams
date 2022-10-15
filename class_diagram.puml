@@ -353,7 +353,7 @@
     'SearchController "1..1" -- "0..*" SearchEntity: control >
     LocationEntity "0..*" -- "1..1" LocationController: control <
     ChatRoomController "1..1" -- "0..*" ChatRoomEntity: control >
-    CalendarEntity "0..*" -- "1..1" CalendarController: control <
+    'CalendarEntity "0..*" -- "1..1" CalendarController: control <
     PortfolioController "1..1" -- "0..*" PortfolioEntity: control >
 
     'CONTROL-CONTROL
