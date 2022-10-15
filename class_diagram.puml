@@ -97,12 +97,6 @@
             -profile_picture
             -introduction
             -link
-            -latitute
-            -longitude
-            -sub_district
-            -district
-            -province
-            -zip_code
             -picture_uri[0..*]
         }
 
@@ -263,6 +257,9 @@
             -start_time
             -end_time
             -description
+            -wage
+            -location
+            -contract
         }
 
         class EventRequestController <<Control>> {
@@ -307,6 +304,7 @@
     PortfolioEntity "1..1" -- "0..*" EventEntity: history <
 
     EventEntity "0..*" -- "1..1" LocationEntity: at >
+    MusicianEntity "0..*" -- "1..1" LocationEntity: at >
     OrganizerEntity "1..1" -- "0..*" EventEntity: host >
 
     EventEntity "1..1" o-- "1..1" ReviewEntity: is Part Of <
