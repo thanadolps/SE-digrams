@@ -279,12 +279,13 @@
         } 
         
         class ChatRoomController <<Control>> {
-            +send message(text,senderId)
+            +create message(text,senderId)
         }
 
         class ChatRoomHandler <<Boundary>> {
             +create chatroom(organizerId, musicianId)
             +create event request()
+            +send message(text,senderId)
         }
     }
 
