@@ -188,8 +188,8 @@
 
     class SearchController <<Control>> {
         +calculate matching musicians(event_details[0..*])
-        +get sorted matched musician list()
         +initiate chatroom(id)
+        +get sorted matched musician list()
     }
 
     class SearchHandler <<Boundary>> {
@@ -197,6 +197,7 @@
         +fill in event details()
         +search musicians(event_details[0..*])
         +view profile(id)
+        +sort matched musician(sort_params[0..*])
     }
 
     class LocationEntity <<Entity>> {
