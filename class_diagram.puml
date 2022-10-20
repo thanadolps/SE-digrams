@@ -188,6 +188,8 @@
 
     class SearchController <<Control>> {
         +calculate matching musicians(event_details[0..*])
+        +get sorted matched musician list()
+        +initiate chatroom(id)
     }
 
     class SearchHandler <<Boundary>> {
@@ -279,6 +281,7 @@
         } 
         
         class ChatRoomController <<Control>> {
+            +create chatroom()
             +create message(text,senderId)
         }
 
@@ -360,7 +363,7 @@
     'CONTROL-CONTROL
     CustomerController "1..1" -- "1..1" CalendarController: call <
     SearchController "1..1" -- "1..1" OrganizerController: call <
-    
+    OrganizerController "1..1" -- "1..1" ChatRoomController: call >
 
 
 @enduml
