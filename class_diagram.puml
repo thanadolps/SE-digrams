@@ -275,7 +275,7 @@
         }
 
         class EventRequestHandler <<Boundary>> {
-            +change event request()
+            +change event request(event_details[0..*])
         }
     
         class ChatRoomEntity <<Entity>> {
@@ -289,7 +289,7 @@
 
         class ChatRoomHandler <<Boundary>> {
             +create chatroom(organizerId, musicianId)
-            +create event request()
+            +create event request(event_details[0..*])
             +send message(text,senderId)
         }
     }
