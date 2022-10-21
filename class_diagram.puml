@@ -76,10 +76,6 @@
             +update calendar preference()
             +update account detail()
         }
-
-        class CalendarEntity {
-
-        }
     
         class CalendarController <<Control>> {
             +manage related events(customer_id)
@@ -186,41 +182,44 @@
         }
     }
 
-    class SearchController <<Control>> {
-        +calculate matching musicians(event_details[0..*])
-        +initiate chatroom(id)
-        +get sorted matched musician list()
+    package Search {
+        class SearchController <<Control>> {
+            +calculate matching musicians(event_details[0..*])
+            +initiate chatroom(id)
+            +get sorted matched musician list()
+        }
+
+        class SearchHandler <<Boundary>> {
+            +initiate chatroom(id)
+            +fill in event details()
+            +search musicians(event_details[0..*])
+            +view profile(id)
+            +sort matched musician(sort_params[0..*])
+        }
     }
 
-    class SearchHandler <<Boundary>> {
-        +initiate chatroom(id)
-        +fill in event details()
-        +search musicians(event_details[0..*])
-        +view profile(id)
-        +sort matched musician(sort_params[0..*])
-    }
+    package Location {
+        class LocationEntity <<Entity>> {
+            -location_id
+            -longitude
+            -latitude
+            -sub_district
+            -district
+            -province
+            -zip_code
+        }
 
-    class LocationEntity <<Entity>> {
-        -location_id
-        -longitude
-        -latitude
-        -sub_district
-        -district
-        -province
-        -zip_code
-    }
+        class LocationController <<Control>> {
+            +create location()
+            +calculate distance()
+            +find all near(location)
+        }
 
-    class LocationController <<Control>> {
-        +create location()
-        +calculate distance()
-        +find all near(location)
+        class LocationHandler <<Boundary>> {
+            +add location()
+            +update location()
+        }
     }
-
-    class LocationHandler <<Boundary>> {
-        +add location()
-        +update location()
-    }
-    
 
     package Payment {
         class PaymentEntity <<Entity>>{
