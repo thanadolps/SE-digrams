@@ -82,7 +82,7 @@
         }
     
         class CalendarController <<Control>> {
-            +manage related events()
+            +manage related events(customer_id)
         }
 
         class CalendarHandler <<Boundary>> {
