@@ -67,9 +67,8 @@
         class CustomerController <<Control>> {
             +change calendar preference()
             +change account detail()
-            +send message(chatroom_id)
         }
-
+            
         class CustomerHandler <<Boundary>> {
             +update calendar preference()
             +update account detail()
@@ -281,13 +280,13 @@
         
         class ChatRoomController <<Control>> {
             +create chatroom()
-            +create message(text,senderId)
+            +create message(formData,senderId)
         }
 
         class ChatRoomHandler <<Boundary>> {
             +create chatroom(organizerId, musicianId)
             +create event request(event_details[0..*])
-            +send message(text,senderId)
+            +send message(chatroomID, senderId, text, uploadedFile)
         }
     }
 
