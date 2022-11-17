@@ -6,25 +6,69 @@ hide circle
 ' avoid problems with angled crows feet
 skinparam linetype ortho
 
-entity "Entity01" as e01 {
-  *e1_id : number <<generated>>
-  --
-  *name : text
-  description : text
+entity "UserEntity" as user {
+    user_id : int
+    --
+    salt : stirng
+    password_hash : string
+    email: string
 }
 
-entity "Entity02" as e02 {
+entity "AdminEntity" as admin {
+  user_id : int [ref: ]
+  --
+  admin_name : string
+}
+
+entity "MusicianEntity" as mus{
+  user_id : int
+  --
+  
+  first_name : string
+  last_name : string
+  phone_number : string
+  
+  calendar_color : string
+  calendar_style : string
+  calendar_font_size : int
+}
+
+entity "OraganizerEntity" as org {
   *e2_id : number <<generated>>
   --
   *e1_id : number <<FK>>
   other_details : text
 }
 
-entity "Entity03" as e03 {
-  *e3_id : number <<generated>>
+
+
+entity Customer {
+  first_name: string
+  last_name: string
+  phone_number: string
+}
+
+entity Location {
+  location_id: int
   --
-  e1_id : number <<FK>>
-  other_details : text
+  latitude
+  longitude
+  sub_district: string
+  district: string
+  provice: string
+  zip_code
+}
+
+entity Event {
+  event_id: int
+  --
+  status
+  start_time
+  end_time
+  description
+  provice: string
+  zip_code
+  wage
 }
 
 e01 ||..o{ e02

@@ -35,6 +35,7 @@
 
         class UserController <<Control>> {
             +change password(new_password)
+            +find(user_id)
         }
 
         class UserEntity <<Entity>> {
